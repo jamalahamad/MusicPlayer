@@ -108,12 +108,13 @@ class MusicViewController: UIViewController {
     func updateProgress(timer:Timer)  {
         slider.value = Float(player.currentTime)
         
-        let remainingTime : Int = Int(player.duration-player.currentTime)
-        let currentTime : Int = Int(player.currentTime)
+        let remainingTime = (player.duration-player.currentTime)
+        let currentTime = (player.currentTime)
         
-        
-        currentLabel.text = "-\(remainingTime)"
-        remainingLabel.text = "+\(currentTime)"
+         let roundedLeftTime = String(format: "%.2f", remainingTime)
+         let roundedCurrentTime = String(format: "%.2f", currentTime)
+        currentLabel.text = "-\(roundedLeftTime)"
+        remainingLabel.text = "+\(roundedCurrentTime)"
 
     
     }
@@ -161,7 +162,7 @@ class MusicViewController: UIViewController {
                 
                 do{
                     player = try AVAudioPlayer(contentsOf: songsPathUrl as URL)
-                    player.play()
+                    PlayButton(self)
                 }
                 catch{
                     print("error=\(error.localizedDescription)")
@@ -192,7 +193,9 @@ class MusicViewController: UIViewController {
                 
                 do{
                     player = try AVAudioPlayer(contentsOf: songsPathUrl as URL)
-                   player.play()
+
+                    PlayButton(self)
+
                   }
                 catch{
                     print("error=\(error.localizedDescription)")
@@ -210,7 +213,13 @@ class MusicViewController: UIViewController {
         
         
         player.currentTime = TimeInterval(slider.value)
-        player.play()
+        PlayButton(self)
     
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(true)
+        player.stop()
+        
     }
 }
