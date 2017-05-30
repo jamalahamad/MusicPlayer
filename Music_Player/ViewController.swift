@@ -18,7 +18,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     override func viewDidLoad() {
         
         super.viewDidLoad()
-        
+        UIApplication.shared.statusBarStyle = UIStatusBarStyle.lightContent
+
               
              }
     

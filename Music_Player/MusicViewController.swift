@@ -29,6 +29,8 @@ class MusicViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        UIApplication.shared.statusBarStyle = UIStatusBarStyle.lightContent
+        
         SongsNameLabel.text = songsArray[songsId]
         
         let path = Bundle.main.path(forResource:"\(songsArray[songsId])", ofType: ".mp3")
@@ -43,15 +45,16 @@ class MusicViewController: UIViewController {
                     let session = AVAudioSession.sharedInstance()
                     try session.setCategory(AVAudioSessionCategoryPlayback)
                     try session.setActive(true)
+                    player.prepareToPlay()
                     Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.updateProgress), userInfo: nil, repeats: true)
                                     
                     
-                    let artwork = MPMediaItemArtwork(image : #imageLiteral(resourceName: "music_bg3.jpg"))
-                    
                     let titleStr = songsArray[songsId]
+                    let artwork = MPMediaItemArtwork(image : #imageLiteral(resourceName: "music_bg3.jpg"))
 
                     MPNowPlayingInfoCenter.default().nowPlayingInfo=[MPMediaItemPropertyArtwork :artwork,MPMediaItemPropertyTitle : "\(titleStr)"]
-                   
+                    
+
                     UIApplication.shared.beginReceivingRemoteControlEvents()
                     let commandCenter = MPRemoteCommandCenter.shared()
                      commandCenter.nextTrackCommand.isEnabled = true
@@ -82,21 +85,39 @@ class MusicViewController: UIViewController {
             {
                 switch event.subtype {
                 case .remoteControlPlay:
+                      let titleStr = songsArray[songsId]
+
+                      let artwork = MPMediaItemArtwork(image : #imageLiteral(resourceName: "music_bg3.jpg"))
+                       MPNowPlayingInfoCenter.default().nowPlayingInfo=[MPMediaItemPropertyArtwork :artwork,MPMediaItemPropertyTitle : "\(titleStr)"]
                       player.play()
-                      print("play match")
+
+                     print("play match")
 
                 case .remoteControlPause:
                       player.pause()
                       print("pause match")
 
                 case .remoteControlNextTrack:
+                    
+                    
+                    let artwork = MPMediaItemArtwork(image : #imageLiteral(resourceName: "music_bg3.jpg"))
+                    
+                    let titleStr = songsArray[songsId]
+                    
+                    MPNowPlayingInfoCenter.default().nowPlayingInfo=[MPMediaItemPropertyArtwork :artwork,MPMediaItemPropertyTitle : "\(titleStr)"]
+
                       self.nextButton(self)
-                      print("next match")
-
+                      
+                    
                 case .remoteControlPreviousTrack:
+                    
+                    let artwork = MPMediaItemArtwork(image : #imageLiteral(resourceName: "music_bg3.jpg"))
+                    
+                    let titleStr = songsArray[songsId]
+                    
+                    MPNowPlayingInfoCenter.default().nowPlayingInfo=[MPMediaItemPropertyArtwork :artwork,MPMediaItemPropertyTitle : "\(titleStr)"]
                     self.prevButton(self)
-                    print("prev match")
-
+                  
                 default:
                     print("no match")
                 }
@@ -125,7 +146,7 @@ class MusicViewController: UIViewController {
         if (!isplaying){
             
             isplaying = true
-        player.prepareToPlay()
+       player.prepareToPlay()
        slider.maximumValue = Float(player.duration)
         
            play.setImage( UIImage.init(named: "pause.png"), for: .normal)
@@ -162,7 +183,10 @@ class MusicViewController: UIViewController {
                 
                 do{
                     player = try AVAudioPlayer(contentsOf: songsPathUrl as URL)
-                    PlayButton(self)
+                    play.setImage( UIImage.init(named: "pause.png"), for: .normal)
+
+                    player.play()
+                    slider.maximumValue = Float(player.duration)
                 }
                 catch{
                     print("error=\(error.localizedDescription)")
@@ -194,14 +218,15 @@ class MusicViewController: UIViewController {
                 do{
                     player = try AVAudioPlayer(contentsOf: songsPathUrl as URL)
 
-                    PlayButton(self)
+                    play.setImage( UIImage.init(named: "pause.png"), for: .normal)
+                    player.play()
+                    slider.maximumValue = Float(player.duration)
 
                   }
                 catch{
                     print("error=\(error.localizedDescription)")
                     
                 }
-                
             }
         
         
